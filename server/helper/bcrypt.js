@@ -1,6 +1,13 @@
-function hashedPassword(params) {}
+function hashedPassword(password) {
+  const salt = bcrypt.genSaltSync(10);
+  const hash = bcrypt.hashSync(password, salt);
+  return hash;
+}
 
-function isValidPassword(params) {}
+function isValidPassword(password, passDb) {
+  const isValid = bcrypt.compareSync(password, passDb);
+  return isValid;
+}
 
 module.exports = {
   hashedPassword,
