@@ -44,6 +44,10 @@ module.exports = {
         onDelete: "cascade",
         onUpdate: "cascade",
       },
+      bank_code: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

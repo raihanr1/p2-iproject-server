@@ -76,14 +76,29 @@ module.exports = (sequelize, DataTypes) => {
       PropertyId: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        references: {
-          model: "Properties",
-          key: "id",
+        validate: {
+          notEmpty: {
+            msg: "User id is required",
+          },
+          notNull: {
+            msg: "User id is required",
+          },
         },
-        onDelete: "cascade",
-        onUpdate: "cascade",
+      },
+      bank_code: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notEmpty: {
+            msg: "Bank is required",
+          },
+          notNull: {
+            msg: "Bank is required",
+          },
+        },
       },
     },
+
     {
       sequelize,
       modelName: "Transaction",

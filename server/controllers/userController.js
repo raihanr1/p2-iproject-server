@@ -61,23 +61,27 @@ class Controller {
 
   static async sendEmailToken(req, res, next) {
     try {
-      let transporter = nodemailer.createTransport({
-        host: "smtp.ethereal.email",
-        port: 465,
-        secure: true, // true for 465, false for other ports
+      const transporter = nodemailer.createTransport({
+        service: "gmail",
         auth: {
-          user: process.env.EMAIL, // generated ethereal user
-          pass: process.env.EMAIL_PASSWORD, // generated ethereal password
+          user: "realestatemaulanagroup@gmail.com",
+          pass: "MaulanaGroup", // naturally, replace both with your real credentials or an application-specific password
         },
       });
 
-      // send mail with defined transport object
-      let info = await transporter.sendMail({
-        from: process.env.EMAIL, // sender address
-        to: "raihanrobbani3@gmail.com", // list of receivers
-        subject: "Hello ✔", // Subject line
-        text: "Hello world?", // plain text body
-        html: "<b>Hello world?</b>", // html body
+      const mailOptions = {
+        from: "realestatemaulanagroup@gmail.com",
+        to: "raihanrobbani3@gmail.com",
+        subject: "Invoices due",
+        text: "Dudes, we really need your money. browww!!!!",
+      };
+
+      transporter.sendMail(mailOptions, function (error, info) {
+        if (error) {
+          console.log(error);
+        } else {
+          console.log("Email sent: " + info.response);
+        }
       });
     } catch (error) {
       console.log(error);
