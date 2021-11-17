@@ -7,7 +7,9 @@ router.post("/register", Controller.postRegister);
 
 router.post("/login", Controller.postLoginUser);
 
-router.get("/test", Controller.sendEmailToken);
+router.patch("/login/token", Controller.validasiPayload);
+
+router.patch("/login/:UserId", Controller.getTokenGmail);
 
 router.use(errorHandle);
 

@@ -1,10 +1,8 @@
 "use strict";
 const { User } = require("../models");
-const nodemailer = require("nodemailer");
 const { isValidPassword } = require("../helper/bcrypt");
 const { signToken } = require("../helper/jwt");
-// const SMTPServer = require("smtp-server").SMTPServer;
-
+const { sendEmailToken } = require("../helper/mailer");
 class Controller {
   static async postRegister(req, res, next) {
     try {
@@ -22,8 +20,7 @@ class Controller {
         email: response.email,
       });
     } catch (error) {
-      res.redirect("/user/test");
-      //   next(error);
+      next(error);
     }
   }
 
@@ -41,50 +38,121 @@ class Controller {
           email,
         },
       });
-      let validPassword = isValidPassword(password, response.password);
-      if (!response || !validPassword) {
+      if (!response) {
         throw { message: "Invalid email/password" };
-      } else {
-        let payload = {
+      }
+
+      let validPassword = isValidPassword(password, response.password);
+      if (!validPassword) {
+        throw { message: "Invalid email/password" };
+      }
+      if (!response.token) {
+        let token = Math.ceil(Math.random() * 1000000);
+        await User.update(
+          {
+            token,
+          },
+          {
+            where: {
+              id: response.id,
+            },
+          }
+        );
+        let successSend = await sendEmailToken(
+          response.email,
+          response.given_name,
+          token
+        );
+        res.status(201).json({
           id: response.id,
-          email: response.email,
-        };
-        let access_token = signToken(payload);
-        res.status(200).json({
-          access_token,
         });
       }
+      if (!response.payload) {
+        throw { message: "Verification token user", id: response.id };
+      }
+
+      let payload = {
+        id: response.id,
+        email: response.email,
+      };
+      let access_token = signToken(payload);
+      res.status(200).json({
+        access_token,
+      });
     } catch (error) {
       next(error);
     }
   }
 
-  static async sendEmailToken(req, res, next) {
+  static async getTokenGmail(req, res, next) {
     try {
-      const transporter = nodemailer.createTransport({
-        service: "gmail",
-        auth: {
-          user: "realestatemaulanagroup@gmail.com",
-          pass: "MaulanaGroup", // naturally, replace both with your real credentials or an application-specific password
+      let id = req.params.UserId;
+      let response = await User.findByPk(+id);
+      if (!response) {
+        throw {
+          message: "User not found",
+        };
+      }
+      let token = Math.ceil(Math.random() * 1000000);
+      await User.update(
+        {
+          token,
         },
-      });
-
-      const mailOptions = {
-        from: "realestatemaulanagroup@gmail.com",
-        to: "raihanrobbani3@gmail.com",
-        subject: "Invoices due",
-        text: "Dudes, we really need your money. browww!!!!",
-      };
-
-      transporter.sendMail(mailOptions, function (error, info) {
-        if (error) {
-          console.log(error);
-        } else {
-          console.log("Email sent: " + info.response);
+        {
+          where: {
+            id: +id,
+          },
         }
+      );
+      let successSend = await sendEmailToken(
+        response.email,
+        response.given_name,
+        token
+      );
+      res.status(200).json({
+        id: response.id,
       });
     } catch (error) {
-      console.log(error);
+      next(error);
+    }
+  }
+
+  static async validasiPayload(req, res, next) {
+    try {
+      let { id, payload } = req.body;
+      let user = await User.findByPk(+id);
+      if (!user) {
+        throw {
+          message: "User not found",
+        };
+      }
+      if (user.token !== payload) {
+        throw {
+          message: "Invalid Token",
+        };
+      }
+
+      let response = await User.update(
+        {
+          payload,
+        },
+        {
+          where: {
+            id,
+          },
+        }
+      );
+      let payloadToken = {
+        id: user.id,
+        email: user.email,
+      };
+      console.log(payloadToken, ">>> ");
+      let access_token = signToken(payloadToken);
+      res.status(200).json({
+        access_token,
+      });
+    } catch (error) {
+      next(error);
     }
   }
 }

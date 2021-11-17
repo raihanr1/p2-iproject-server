@@ -19,10 +19,10 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         validate: {
           notEmpty: {
-            msg: "Name is required",
+            msg: "User name is required",
           },
           notNull: {
-            msg: "Name is required",
+            msg: "User name is required",
           },
         },
       },
@@ -91,6 +91,9 @@ module.exports = (sequelize, DataTypes) => {
         },
       },
       token: {
+        type: DataTypes.STRING,
+      },
+      payload: {
         type: DataTypes.STRING,
       },
     },

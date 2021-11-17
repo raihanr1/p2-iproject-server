@@ -1,25 +1,22 @@
+const { User } = require("../models");
+
 async function authorization(req, res, next) {
   try {
-<<<<<<< HEAD
-    let userId = req.user.id;
-    // let data = await Food.findAll({
-    //   where: {
-    //     userId,
-    //   },
-    // });
-    if (data.length) {
-      next();
-    } else {
+    let response = await User.findOne({
+      where: {
+        id: req.user.id,
+      },
+    });
+    if (response.role !== "Admin") {
       throw {
         message: "You are not authorized",
       };
+    } else {
+      next();
     }
   } catch (error) {
     next(error);
   }
-=======
-  } catch (error) {}
->>>>>>> 49b6288c8eea539f68bdd137d5c456d1770d31eb
 }
 
 module.exports = { authorization };
