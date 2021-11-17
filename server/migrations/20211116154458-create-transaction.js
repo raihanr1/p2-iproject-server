@@ -34,6 +34,16 @@ module.exports = {
         onDelete: "cascade",
         onUpdate: "cascade",
       },
+      PropertyId: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: "Properties",
+          key: "id",
+        },
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

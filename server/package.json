@@ -21,6 +21,7 @@
     "nodemailer": "^6.7.1",
     "pg": "^8.7.1",
     "sequelize": "^6.9.0",
-    "sequelize-cli": "^6.3.0"
+    "sequelize-cli": "^6.3.0",
+    "smtp-server": "^3.9.0"
   }
 }

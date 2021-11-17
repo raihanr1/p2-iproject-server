@@ -73,6 +73,16 @@ module.exports = (sequelize, DataTypes) => {
           },
         },
       },
+      PropertyId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+          model: "Properties",
+          key: "id",
+        },
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      },
     },
     {
       sequelize,
