@@ -75,9 +75,12 @@ class Controller {
         id: response.id,
         email: response.email,
       };
+      if (response.role === "Admin") {
+      }
       let access_token = signToken(payload);
       res.status(200).json({
         access_token,
+        role: response.role,
       });
     } catch (error) {
       next(error);

@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
   Transaction.init(
     {
       id_FVA: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
         allowNull: false,
         validate: {
           notEmpty: {
@@ -26,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
         },
       },
       external_id: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
         allowNull: false,
         validate: {
           notEmpty: {
@@ -38,7 +38,7 @@ module.exports = (sequelize, DataTypes) => {
         },
       },
       account_number: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
         allowNull: false,
         validate: {
           notEmpty: {
