@@ -13,6 +13,8 @@ module.exports = {
           mobile_num: "085156054979",
           address: "Yasmin Bogor",
           role: "Admin",
+          createdAt: new Date(),
+          updatedAt: new Date(),
         },
       ],
       {}
