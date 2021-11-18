@@ -7,6 +7,7 @@ async function authorization(req, res, next) {
         id: req.user.id,
       },
     });
+
     if (response.role !== "Admin") {
       throw {
         message: "You are not authorized",
