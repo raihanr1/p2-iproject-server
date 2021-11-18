@@ -1,11 +1,11 @@
 const axios = require("axios");
-const { Property, Transaction } = require("../models");
+const { Property, Transaction, BookMark, User } = require("../models");
 
 class Controller {
-  static async postCreateFixedVirtualAccount(req, res) {
+  static async postCreateFixedVirtualAccount(req, res, next) {
     try {
       let { bank_code, name } = req.body;
-      let bookMark = await BookMark.findAll({
+      let bookMark = await BookMark.findOne({
         include: {
           model: Property,
           attributes: {
@@ -36,12 +36,13 @@ class Controller {
       });
       let { id, external_id, account_number, status } = response.data;
       let created = {
-        id_FVA: +id,
+        id_FVA: id,
         external_id,
         status,
         UserId: req.user.id,
-        PropertyId: transactionUser[0].Property.id,
+        PropertyId: bookMark.Property.id,
         account_number,
+        bank_code,
       };
       let transaction = await Transaction.create(created);
       res.status(201).json(response.data);
@@ -66,10 +67,10 @@ class Controller {
     }
   }
 
-  static async createInvoiceWithFVA(req, res) {
+  static async createInvoiceWithFVA(req, res, next) {
     try {
       let id = req.params.book_mark_id;
-      let bookMark = await BookMark.findAll({
+      let bookMark = await BookMark.findOne({
         include: {
           model: Property,
           attributes: {
@@ -94,14 +95,15 @@ class Controller {
           PropertyId: bookMark.Property.id,
         },
       });
+      console.log(transactionUser, "uhuy");
       let { external_id } = transactionUser;
       let response = await axios({
         method: "post",
         url: "https://api.xendit.co/v2/invoices",
         data: {
           external_id,
-          callback_virtual_account_id: transactionUser.account_number,
-          amount: transactionUser.Property.price,
+          callback_virtual_account_id: transactionUser.id_FVA,
+          amount: bookMark.Property.price,
           description: `Invoice for Maulana group property transaction, you can payment this ${bookMark.Property.name}`,
           should_send_email: "true",
           customer: {
