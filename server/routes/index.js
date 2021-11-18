@@ -7,4 +7,5 @@ const adminRouter = require("./admin");
 router.use("/user", userRouter);
 router.use("/home", homeRouter);
 router.use("/admin", adminRouter);
+
 module.exports = router;
