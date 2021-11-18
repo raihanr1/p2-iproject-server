@@ -64,6 +64,24 @@ module.exports = (sequelize, DataTypes) => {
           },
         },
       },
+      address: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notEmpty: {
+            msg: "Address is required",
+          },
+          notNull: {
+            msg: "Address is required",
+          },
+        },
+      },
+      status: {
+        type: DataTypes.STRING,
+      },
+      like: {
+        type: DataTypes.INTEGER,
+      },
     },
     {
       sequelize,

@@ -2,6 +2,14 @@ function errorHandle(error, req, res, next) {
   console.log(error, ">>");
   if (error.name === "SequelizeValidationError") {
     res.status(400).json({ message: error.errors[0].message });
+  } else if (error.message === "Verification token user") {
+    res.status(401).json(error);
+  } else if (error.message === "User not found") {
+    res.status(404).json(error);
+  } else if (error.message === "Property not found") {
+    res.status(404).json(error);
+  } else if (error.message === "Invalid Token") {
+    res.status(400).json(error);
   } else if (
     error.message === "Email is required" ||
     error.message === "Password is required"

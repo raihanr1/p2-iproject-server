@@ -1,7 +1,8 @@
 "use strict";
 const { Model } = require("sequelize");
+const { hashedPassword } = require("../helper/bcrypt");
 module.exports = (sequelize, DataTypes) => {
-  class Transaction extends Model {
+  class User extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -11,98 +12,100 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   }
-  Transaction.init(
+  User.init(
     {
-      id_FVA: {
+      given_name: {
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
           notEmpty: {
-            msg: "Id FVA is required",
+            msg: "User name is required",
           },
           notNull: {
-            msg: "Id FVA is required",
+            msg: "User name is required",
           },
         },
       },
-      external_id: {
+      email: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true,
+        validate: {
+          notEmpty: {
+            msg: "Email is required",
+          },
+          notNull: {
+            msg: "Email is required",
+          },
+          isEmail: {
+            msg: "Invalid email format",
+          },
+        },
+      },
+      password: {
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
           notEmpty: {
-            msg: "External id is required",
+            msg: "Password is required",
           },
           notNull: {
-            msg: "External id is required",
+            msg: "Password is required",
           },
         },
       },
-      account_number: {
+      mobile_num: {
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
           notEmpty: {
-            msg: "Account number is required",
+            msg: "Mobile number is required",
           },
           notNull: {
-            msg: "Account number is required",
+            msg: "Mobile number is required",
           },
         },
       },
-      status: {
+      address: {
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
           notEmpty: {
-            msg: "Status is required",
+            msg: "Address is required",
           },
           notNull: {
-            msg: "Status is required",
+            msg: "Address is required",
           },
         },
       },
-      UserId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        validate: {
-          notEmpty: {
-            msg: "User id is required",
-          },
-          notNull: {
-            msg: "User id is required",
-          },
-        },
-      },
-      PropertyId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        validate: {
-          notEmpty: {
-            msg: "User id is required",
-          },
-          notNull: {
-            msg: "User id is required",
-          },
-        },
-      },
-      bank_code: {
+      role: {
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
           notEmpty: {
-            msg: "Bank is required",
+            msg: "Role is required",
           },
           notNull: {
-            msg: "Bank is required",
+            msg: "Role is required",
           },
         },
+      },
+      token: {
+        type: DataTypes.STRING,
+      },
+      payload: {
+        type: DataTypes.STRING,
       },
     },
-
     {
       sequelize,
-      modelName: "Transaction",
+      modelName: "User",
+      hooks: {
+        beforeCreate(user) {
+          user.password = hashedPassword(user.password);
+        },
+      },
     }
   );
-  return Transaction;
+  return User;
 };
